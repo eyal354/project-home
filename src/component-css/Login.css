@@ -1,0 +1,78 @@
+/* Form styling */
+.form-login {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 520px;
+  padding: 50px 35px;
+  background-color: rgba(255, 255, 255, 0.13);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.form-login h3 {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 42px;
+  text-align: center;
+  color: black;
+  margin-top: 0;
+}
+
+/* Input fields and buttons */
+.formElement {
+  display: block;
+  width: 100%;
+  height: 50px;
+  padding: 0 10px;
+  margin-top: 8px;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #e5e5e5;
+}
+
+::placeholder {
+  color: #000000ce;
+}
+
+.formBTN {
+  width: 100%;
+  padding: 15px 0;
+  margin-top: 50px;
+  background-color: #ffffff;
+  color: #080710;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Social media buttons */
+.social {
+  display: flex;
+  margin-top: 30px;
+}
+
+.social div {
+  width: 150px;
+  padding: 5px 10px 10px 5px;
+  margin-left: 25px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.27);
+  color: black;
+  text-align: center;
+}
+
+.social div:hover {
+  background-color: rgba(255, 255, 255, 0.47);
+}
+
+.social i {
+  margin-right: 4px;
+}

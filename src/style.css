@@ -1,0 +1,90 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+  background-image: linear-gradient(to right, #8e44ad 0%, #3498db 100%);
+}
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 130vh;
+  margin: 0;
+}
+footer {
+  text-align: center;
+  margin-top: 90px;
+  border-top: 1px solid #eee;
+  font-size: 0.85em;
+  color: #555;
+  background-color: #c1c1c1f8;
+  color: white;
+  box-shadow: 0 0 6px 3px #ffffff7f;
+  position: relative;
+}
+
+section {
+  padding: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+button:active {
+  background-color: #004085;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.send-input {
+  grid-column: 2 / 3;
+  height: 40px;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background-color: #f9f9f9;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.light-bulb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: yellow;
+  transition: opacity 0.3s ease; /* Smooth transition for the light effect */
+  box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+.light-level-control {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the spacing as needed */
+}
+
+.data-display {
+  margin-bottom: 10px;
+  padding: 5px 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.temperature-value {
+  margin-left: 10px;
+  font-weight: bold;
+}

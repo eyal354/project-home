@@ -1,0 +1,73 @@
+.Manage-panel {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 50px 0 50px 0;
+}
+.pending-requests {
+  max-width: 600px;
+  margin: 0;
+  padding: 5px 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: wheat;
+}
+.request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.request-text {
+  flex: 1;
+}
+
+.edit-btn,
+.delete-btn {
+  margin-left: 10px;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.approved-users {
+  max-width: 600px;
+  margin: 0;
+  padding: 5px 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: wheat;
+}
+.data-display {
+  border-radius: 30px;
+  background-color: wheat;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
