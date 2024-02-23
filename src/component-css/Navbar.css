@@ -1,48 +1,17 @@
-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Ensure the navbar is positioned relatively and has a z-index higher than the form */
+.navbar {
   position: relative;
-  z-index: 1;
-  width: 100%;
-  padding: 20px 0; /* Adjust padding to control the vertical size of the navbar */
-  /* No mask-image or box-shadow for a flatter design */
+  z-index: 1050; /* This should be higher than the z-index of any elements you want the navbar to appear above */
 }
 
-nav ul {
-  display: flex;
-  justify-content: space-around; /* This will space the nav items evenly */
-  align-items: center; /* This will vertically center the nav items */
-  list-style-type: none; /* Removes default list styling */
-  margin: 0;
-  padding: 0;
-  width: 100%; /* Ensures the ul takes up the full width of the nav */
-  max-width: 960px; /* Matches the max-width from the desired design */
-  background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
-  backdrop-filter: blur(
-    10px
-  ); /* Creates a blur effect on the background content */
-  border-radius: 25px; /* Rounded corners of the navbar */
-  padding: 10px; /* Padding inside the navbar */
+/* Center the nav links within the dropdown and give them a z-index higher than the form */
+.navbar-collapse.show .nav-link {
+  text-align: center;
+  position: relative;
+  z-index: 1050;
 }
 
-nav ul li a {
-  font-family: "Open Sans", sans-serif;
-  text-transform: uppercase;
-  color: white; /* Text color */
-  font-size: 18px;
-  text-decoration: none;
-  padding: 10px 15px; /* Padding for each nav item */
-  transition: color 0.3s ease, background-color 0.3s ease;
-  display: flex;
-}
-
-nav ul li a:hover {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.2
-  ); /* Slightly more opaque on hover */
-  color: #dcdcdc; /* Lighter color on hover */
+/* Override .ms-auto when the navbar is toggled open in Bootstrap */
+.navbar-collapse.show .ms-auto {
+  margin-left: 0 !important;
 }

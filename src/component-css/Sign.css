@@ -55,8 +55,7 @@
   color: #000000ce;
 }
 
-.formBTN {
-  margin-top: 50px;
+.formBTN-s {
   width: 100%;
   background-color: #ffffff;
   color: #080710;
@@ -93,7 +92,14 @@
 .social i {
   margin-right: 4px;
 }
+
 .pass-error {
+  height: 20px; /* Adjust the height as needed */
   color: red;
-  grid-column: 2/3;
+
+  visibility: hidden; /* Initially hide the error message */
+}
+
+.pass-error.active {
+  visibility: visible; /* Show error message when active */
 }

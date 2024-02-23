@@ -80,7 +80,7 @@ export default function Login() {
         />
 
         <button className="formBTN" type="submit">
-          Login1
+          Login
         </button>
 
         {loginStatus && <p className="loginStatus">{loginStatus}</p>}

@@ -150,11 +150,12 @@ export default function Sign() {
           name="houseId"
           value={formData.houseId}
         />
-        {passwordMismatch && (
-          <p className="pass-error">Passwords do not match</p>
-        )}
+        <p className={`pass-error ${passwordMismatch ? "active" : ""}`}>
+          {passwordMismatch && "Passwords do not match"}
+        </p>
+
         {error && <p className="error">{error}</p>}
-        <button className="formBTN" type="submit">
+        <button className="formBTN-s" type="submit">
           Sign Up
         </button>
       </form>

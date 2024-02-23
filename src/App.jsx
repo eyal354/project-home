@@ -9,6 +9,8 @@ import Sign from "./components/Sign";
 import Login from "./components/Login";
 import Panel from "./components/Panel";
 import ManageHouse from "./components/ManageHouse";
+import About from "./components/About";
+import Pricing from "./components/Pricing";
 import "./style.css";
 
 export const AuthContext = createContext();
@@ -86,6 +88,8 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/sign" element={<Sign />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
             {loggedIn && <Route path="/panel" element={<Panel />} />}
             {loggedIn && isOwner && (
               <Route path="/manage-house" element={<ManageHouse />} />
