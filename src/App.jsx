@@ -12,6 +12,8 @@ import ManageHouse from "./components/ManageHouse";
 import About from "./components/About";
 import Pricing from "./components/Pricing";
 import "./style.css";
+import UserID from "./components/UserID";
+import Admin from "./components/Admin";
 
 export const AuthContext = createContext();
 
@@ -20,6 +22,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -41,6 +44,16 @@ function App() {
 
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {
+    if (
+      JSON.parse(localStorage.getItem("User") || "{}")?.email ==
+      "admin@eyalb.com"
+    )
+      setIsAdmin(true);
+    else setIsAdmin(false);
+    console.log(isAdmin);
+  }, [loggedIn, isAdmin]);
 
   // Fetch user details from Firebase Database
   const fetchUserDetailsFromDatabase = async (uid) => {
@@ -80,21 +93,27 @@ function App() {
     <>
       <Router>
         <AuthContext.Provider
-          value={{ loggedIn, setLoggedIn, user, setUser, isOwner }}
+          value={{ loggedIn, setLoggedIn, user, setUser, isOwner, isAdmin }}
         >
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/sign" element={<Sign />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/about" element={<About />} />
-            {loggedIn && <Route path="/panel" element={<Panel />} />}
-            {loggedIn && isOwner && (
-              <Route path="/manage-house" element={<ManageHouse />} />
-            )}
-          </Routes>
+          <div className="margin-top-site">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/sign" element={<Sign />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/about" element={<About />} />
+              {loggedIn && isAdmin ? (
+                <Route path="/panel" element={<Admin />} />
+              ) : (
+                <Route path="/panel" element={<Panel />} />
+              )}
+              {loggedIn && isOwner && (
+                <Route path="/manage-house" element={<ManageHouse />} />
+              )}
+            </Routes>
+          </div>
         </AuthContext.Provider>
       </Router>
     </>

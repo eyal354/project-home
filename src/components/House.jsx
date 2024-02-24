@@ -2,7 +2,7 @@ import { database } from "../Firebase.js";
 import { ref, onValue } from "firebase/database";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../App";
-import "../style.css";
+// import "../style.css";
 
 export default function House() {
   const { loggedIn } = useContext(AuthContext);
@@ -28,14 +28,18 @@ export default function House() {
   }, [loggedIn]);
 
   return (
-    <div className="data-display">
-      <h2>Data-display</h2>
-      <p>
-        <strong>Light Level:</strong> {data.LightLevelRoom}
-      </p>
-      <p>
-        <strong>Temp:</strong> {data.TempRoom}
-      </p>
+    <div className="card pa ">
+      <div className="card-header">
+        <h2>Data Display</h2>
+      </div>
+      <div className="card-body">
+        <p className="card-text">
+          <strong>Light Level:</strong> {data.LightLevelRoom}
+        </p>
+        <p className="card-text">
+          <strong>Temp:</strong> {data.TempRoom}
+        </p>
+      </div>
     </div>
   );
 }

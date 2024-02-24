@@ -2,7 +2,7 @@ import { ref, get, update, onValue } from "firebase/database";
 import { database } from "../Firebase";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../App";
-import "../style.css";
+// import "../style.css";
 
 export default function PendingRequests() {
   const { user } = useContext(AuthContext);
@@ -66,26 +66,33 @@ export default function PendingRequests() {
   };
 
   return (
-    <div className="pending-requests">
-      <h3>Pending Requests</h3>
-      <ul>
+    <div className="card pending-requests">
+      <div className="card-header">
+        <h3>Pending Requests</h3>
+      </div>
+      <ul className="list-group list-group-flush">
         {pendingRequests.map(({ userId, email }, index) => (
-          <li key={userId} className="request-item">
+          <li
+            key={userId}
+            className="list-group-item d-flex justify-content-between align-items-center"
+          >
             <span className="request-text">
               {index + 1}. {email}
             </span>
-            <button
-              className="approve-btn"
-              onClick={() => handleRequest(userId, true)}
-            >
-              Approve
-            </button>
-            <button
-              className="delete-btn"
-              onClick={() => handleRequest(userId, false)}
-            >
-              Delete
-            </button>
+            <div>
+              <button
+                className="btn btn-success btn-sm mr-2"
+                onClick={() => handleRequest(userId, true)}
+              >
+                Approve
+              </button>
+              <button
+                className="btn btn-danger btn-sm ml-2"
+                onClick={() => handleRequest(userId, false)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>

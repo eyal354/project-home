@@ -1,11 +1,8 @@
 /* Form styling */
 .form-login {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
+  margin: auto;
   width: 400px;
-  height: 520px;
+  height: 500px;
   padding: 50px 35px;
   background-color: rgba(255, 255, 255, 0.13);
   border-radius: 10px;
@@ -17,10 +14,8 @@
 .form-login h3 {
   font-size: 32px;
   font-weight: 500;
-  line-height: 42px;
   text-align: center;
   color: black;
-  margin-top: 0;
 }
 
 /* Input fields and buttons */
@@ -33,12 +28,10 @@
   background-color: rgba(255, 255, 255, 0.07);
   border-radius: 7px;
   font-size: 14px;
-  font-weight: 300;
   color: #e5e5e5;
 }
-
-::placeholder {
-  color: #000000ce;
+.formElement:focus {
+  color: black;
 }
 
 .formBTN {
@@ -51,28 +44,4 @@
   font-weight: 600;
   border-radius: 5px;
   cursor: pointer;
-}
-
-/* Social media buttons */
-.social {
-  display: flex;
-  margin-top: 30px;
-}
-
-.social div {
-  width: 150px;
-  padding: 5px 10px 10px 5px;
-  margin-left: 25px;
-  border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.27);
-  color: black;
-  text-align: center;
-}
-
-.social div:hover {
-  background-color: rgba(255, 255, 255, 0.47);
-}
-
-.social i {
-  margin-right: 4px;
 }

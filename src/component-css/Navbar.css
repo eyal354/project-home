@@ -1,17 +1,25 @@
-/* Ensure the navbar is positioned relatively and has a z-index higher than the form */
+/* Ensure the navbar is positioned relatively and has a z-index higher than the form
 .navbar {
   position: relative;
-  z-index: 1050; /* This should be higher than the z-index of any elements you want the navbar to appear above */
+  z-index: 1050; /* This should be higher than the z-index of any elements you want the navbar to appear above 
 }
 
-/* Center the nav links within the dropdown and give them a z-index higher than the form */
+/* Center the nav links within the dropdown and give them a z-index higher than the form 
 .navbar-collapse.show .nav-link {
   text-align: center;
   position: relative;
   z-index: 1050;
 }
 
-/* Override .ms-auto when the navbar is toggled open in Bootstrap */
+/* Override .ms-auto when the navbar is toggled open in Bootstrap 
 .navbar-collapse.show .ms-auto {
   margin-left: 0 !important;
+} */
+.navbar.bg-dark {
+  background-color: rgba(
+    33,
+    37,
+    41,
+    0.97
+  ) !important; /* Adjusted to 80% opacity */
 }

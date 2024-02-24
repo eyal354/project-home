@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { AuthContext } from "../App";
-import "../component-css/Navbar.css"; // Make sure to uncomment this and define the .active-link class
+import "../component-css/Navbar.css"; // Make sure to uncomment this if you have custom CSS
 
 export function Navbar() {
   const { loggedIn, setLoggedIn, isOwner } = useContext(AuthContext);
@@ -25,11 +25,11 @@ export function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container-fluid">
-        <NavLink className="navbar-brand" to="/" activeClassName="active-link">
+        <Link className="navbar-brand" to="/">
           CasaAI
-        </NavLink>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -41,82 +41,49 @@ export function Navbar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div className="navbar-nav w-100">
-            <NavLink
-              className="nav-link"
-              to="/home"
-              activeClassName="active-link"
-            >
+        <div
+          className="collapse navbar-collapse justify-content-between"
+          id="navbarNavAltMarkup"
+        >
+          <div className="navbar-nav text-center">
+            <Link className="nav-link active" aria-current="page" to="/home">
               Home
-            </NavLink>
-            <NavLink
-              className="nav-link"
-              to="/features"
-              activeClassName="active-link"
-            >
+            </Link>
+            <Link className="nav-link" to="/features">
               Features
-            </NavLink>
-            <NavLink
-              className="nav-link"
-              to="/pricing"
-              activeClassName="active-link"
-            >
+            </Link>
+            <Link className="nav-link" to="/pricing">
               Pricing
-            </NavLink>
-            <NavLink
-              className="nav-link"
-              to="/about"
-              activeClassName="active-link"
-            >
+            </Link>
+            <Link className="nav-link" to="/about">
               About
-            </NavLink>
-
-            <div className="navbar-nav ms-auto">
-              {loggedIn ? (
-                <>
-                  <NavLink
-                    className="nav-link"
-                    to="/panel"
-                    activeClassName="active-link"
-                  >
-                    User Panel
-                  </NavLink>
-                  {isOwner && (
-                    <NavLink
-                      className="nav-link"
-                      to="/manage-house"
-                      activeClassName="active-link"
-                    >
-                      Manage House
-                    </NavLink>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-outline-info"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <NavLink
-                    className="nav-link"
-                    to="/sign"
-                    activeClassName="active-link"
-                  >
-                    Sign Up
-                  </NavLink>
-                  <NavLink
-                    className="nav-link"
-                    to="/login"
-                    activeClassName="active-link"
-                  >
-                    Login
-                  </NavLink>
-                </>
-              )}
-            </div>
+            </Link>
+          </div>
+          <div className="navbar-nav text-center">
+            {loggedIn ? (
+              <>
+                <Link className="nav-link" to="/panel">
+                  User Panel
+                </Link>
+                {isOwner && (
+                  <Link className="nav-link" to="/manage-house">
+                    Manage House
+                  </Link>
+                )}
+                <button onClick={handleLogout} className="btn btn-outline-info">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link className="nav-link" to="/sign">
+                  Sign Up
+                </Link>
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

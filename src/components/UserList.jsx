@@ -87,42 +87,55 @@ export default function UserList() {
   };
 
   return (
-    <div className="approved-users">
-      <h3>Approved Users</h3>
-      <ul>
+    <div className="card approved-users">
+      <div className="card-header">
+        <h3>Approved Users</h3>
+      </div>
+      <ul className="list-group list-group-flush">
         {approvedUsers.map((user, index) => (
-          <li key={user.userId} className="user-item">
-            <span
-              className="home-indicator"
-              style={{ backgroundColor: user.isHome ? "green" : "red" }}
-            >
-              <span className="tooltip-text">
-                {user.isHome ? "In Home" : "Not In Home"}
-              </span>
-            </span>
-            <span className="user-text">
-              {index + 1}. Email: {user.email}
-            </span>
-            <select
-              value={user.priority}
-              onChange={(e) =>
-                handlePriorityChange(user.userId, e.target.value)
-              }
-            >
-              {[1, 2, 3, 4, 5].map((priority) => (
-                <option key={priority} value={priority}>
-                  {priority}
-                </option>
-              ))}
-            </select>
-            {!user.isOwner && (
-              <button
-                className="delete-btn"
-                onClick={() => handleDelete(user.userId)}
-              >
-                Delete
-              </button>
-            )}
+          <li key={user.userId} className="list-group-item">
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="user-info">
+                <span
+                  className="home-indicator"
+                  style={{
+                    backgroundColor: user.isHome ? "green" : "red",
+                    marginRight: "10px",
+                  }}
+                >
+                  <span className="tooltip-text">
+                    {user.isHome ? "In Home" : "Not In Home"}
+                  </span>
+                </span>
+                <span className="user-text">
+                  {index + 1}. Email: {user.email}
+                </span>
+              </div>
+              <div className="user-actions">
+                <select
+                  className="form-control form-control-sm mr-2"
+                  value={user.priority}
+                  onChange={(e) =>
+                    handlePriorityChange(user.userId, e.target.value)
+                  }
+                  style={{ display: "inline-block", width: "auto" }}
+                >
+                  {[1, 2, 3, 4, 5].map((priority) => (
+                    <option key={priority} value={priority}>
+                      {priority}
+                    </option>
+                  ))}
+                </select>
+                {!user.isOwner && (
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleDelete(user.userId)}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
           </li>
         ))}
       </ul>

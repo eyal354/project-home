@@ -87,35 +87,42 @@ export default function UserID() {
   const bulbOpacity = lightLevelInput / 100;
 
   return (
-    <div className="data-send">
-      <h2>
-        Preferences for the user: <strong>{fullName}</strong>
-      </h2>
-      <div className="light-level-control">
-        <strong>Light Level:</strong>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={lightLevelInput}
-          onChange={(e) =>
-            handleSliderChange("lightlevel", parseInt(e.target.value, 10))
-          }
-        />
-        <div className="light-bulb" style={{ opacity: bulbOpacity }} />
+    <div className="card data-send">
+      <div className="card-header">
+        <h2>
+          {" "}
+          Preferences for the user: <strong>{fullName}</strong>{" "}
+        </h2>
       </div>
-      <div className="temperature-control">
-        <strong>Temperature:</strong>
-        <input
-          type="range"
-          min="15"
-          max="30"
-          value={temperatureInput}
-          onChange={(e) =>
-            handleSliderChange("temperature", parseInt(e.target.value, 10))
-          }
-        />
-        <span className="temperature-value">{temperatureInput}°C</span>
+      <div className="card-body">
+        <div className="light-level-control mb-3">
+          <strong>Light Level:</strong>
+          <input
+            type="range"
+            className="custom-range"
+            min="0"
+            max="100"
+            value={lightLevelInput}
+            onChange={(e) =>
+              handleSliderChange("lightlevel", parseInt(e.target.value, 10))
+            }
+          />
+          <div className="light-bulb" style={{ opacity: bulbOpacity }} />
+        </div>
+        <div className="temperature-control">
+          <strong>Temperature:</strong>
+          <input
+            type="range"
+            className="custom-range"
+            min="15"
+            max="30"
+            value={temperatureInput}
+            onChange={(e) =>
+              handleSliderChange("temperature", parseInt(e.target.value, 10))
+            }
+          />
+          <span className="temperature-value">{temperatureInput}°C</span>
+        </div>
       </div>
     </div>
   );
