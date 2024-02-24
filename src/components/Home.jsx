@@ -1,4 +1,4 @@
-// import "../style.css"; // Importing the CSS file
+import "../style.css"; // Importing the CSS file
 import "../component-css/Home.css"; // Importing the CSS file
 export default function Home() {
   return (

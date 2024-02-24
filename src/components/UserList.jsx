@@ -1,13 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase";
-import { ref, onValue, get, update } from "firebase/database";
+import { update, ref, onValue, get } from "firebase/database";
 import { AuthContext } from "../App";
 import "../component-css/UserList.css";
 
 export default function UserList() {
   const { user } = useContext(AuthContext);
   const [approvedUsers, setApprovedUsers] = useState([]);
-  const [ownerId, setOwnerId] = useState(null); // State to store the owner's ID
+  const [ownerEmail, setOwnerEmail] = useState(""); // State to store the owner's email
 
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
@@ -15,39 +15,41 @@ export default function UserList() {
 
     const houseId = userDetails.houseId;
 
-    // Fetch the owner's ID
+    // Fetch the owner's email
     get(ref(database, `Houses/${houseId}/owner`)).then((snapshot) => {
       if (snapshot.exists()) {
-        setOwnerId(snapshot.val());
+        setOwnerEmail(snapshot.val());
       }
     });
 
     const approvedUsersRef = ref(database, `Houses/${houseId}/ApprovedUsers`);
     const unsubscribe = onValue(approvedUsersRef, (snapshot) => {
       const approvedUsersData = snapshot.val() || {};
-      Promise.all(
-        Object.entries(approvedUsersData).map(([userId, userData]) =>
-          get(ref(database, `users/${userId}`)).then((userSnapshot) => {
-            if (userSnapshot.exists()) {
-              return {
-                userId,
-                email: userSnapshot.val().email,
-                isHome: userData.isHome,
-                priority: userData.priority || 1,
-                isOwner: userId === ownerId, // Check if this user is the owner
-              };
-            }
-            return null;
-          })
-        )
-      ).then((usersInfo) => {
+      const usersInfoPromises = Object.keys(approvedUsersData).map((userId) =>
+        get(ref(database, `users/${userId}`)).then((userSnapshot) => {
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.val();
+            return {
+              userId,
+              email: userData.email,
+              isHome: approvedUsersData[userId].isHome,
+              priority: approvedUsersData[userId].priority || 1,
+              isOwner: userData.email === ownerEmail, // Check if this user is the owner by email
+            };
+          }
+          return null;
+        })
+      );
+
+      Promise.all(usersInfoPromises).then((usersInfo) => {
         setApprovedUsers(usersInfo.filter(Boolean));
       });
     });
 
     return () => unsubscribe();
-  }, [user, ownerId]);
+  }, [user, ownerEmail]);
 
+  // handleDelete and handlePriorityChange functions remain unchanged
   const handleDelete = (userId) => {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     if (!userDetails || !userDetails.houseId) return;

@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { get, ref, set } from "firebase/database";
 import { database } from "../Firebase";
-// import "../style.css";
-import "../component-css/Sign.css";
 import { useNavigate } from "react-router-dom";
+import "../component-css/Sign.css";
 
 export default function Sign() {
   const navigate = useNavigate();
@@ -60,15 +59,14 @@ export default function Sign() {
           const houseRef = ref(database, `Houses/${formData.houseId}`);
           return get(houseRef).then((snapshot) => {
             const houseData = snapshot.val();
-            // Check if the user is not the owner of the house
-            if (houseData && houseData.owner !== auth.currentUser.uid) {
-              // User is not the owner, add to pending requests
-              const newPendingKey = auth.currentUser.uid; // Create a unique key
+            // Check if the user's email is not the owner's email of the house
+            if (houseData && houseData.owner !== formData.email) {
+              // User's email is not the owner's email, add to pending requests
               const pendingRef = ref(
                 database,
-                `Houses/${formData.houseId}/PendingRequest`
+                `Houses/${formData.houseId}/PendingRequest/${user.uid}`
               );
-              return set(pendingRef, { [newPendingKey]: formData.email });
+              return set(pendingRef, formData.email); // Use the user's UID as key for the pending request
             }
           });
         }
@@ -87,10 +85,7 @@ export default function Sign() {
 
   return (
     <>
-      <div className="background">
-        {/* <div className="shape"></div>
-        <div className="shape"></div> */}
-      </div>
+      <div className="background">{/* Background shapes if needed */}</div>
       <form className="form-sign" onSubmit={handleSubmit}>
         <h3>Sign Up Here</h3>
 

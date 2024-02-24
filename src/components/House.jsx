@@ -17,7 +17,7 @@ export default function House() {
     const houseId = userDetails?.houseId; // Use optional chaining in case UserDetails or houseId is not present
 
     if (loggedIn && houseId) {
-      const houseRef = ref(database, `Houses/${houseId}/Room1`);
+      const houseRef = ref(database, `Houses/${houseId}/LivingRoom`);
       const unsubscribe = onValue(houseRef, (snapshot) => {
         const fetchedData = snapshot.val();
         setData(fetchedData);

@@ -4,32 +4,36 @@ import { ref, set } from "firebase/database";
 
 function AddHouse() {
   const [houseId, setHouseId] = useState("");
-  const [ownerUid, setOwnerUid] = useState("");
-  const [tempRoom, setTempRoom] = useState("");
-  const [lightLevelRoom, setLightLevelRoom] = useState("");
+  const [ownerEmail, setOwnerEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Ensuring the email is compatible with Firebase keys by replacing '.' with ','
+    const sanitizedEmail = ownerEmail.replace(/\./g, ",");
+
     const houseRef = ref(database, `Houses/${houseId}`);
     set(houseRef, {
-      owner: ownerUid,
+      owner: ownerEmail,
       ApprovedUsers: {
-        [ownerUid]: {
-          isHome: false, // Set default values or fetch from user's profile
-          priority: 1, // Set default values or fetch from user's profile
+        [sanitizedEmail]: {
+          // Using the sanitized email as the key
+          isHome: false,
+          priority: 1,
         },
       },
-      Room1: {
-        TempRoom: tempRoom,
-        LightLevelRoom: lightLevelRoom,
+      LivingRoom: {
+        TempRoom: 0, // Default temperature preference for Living Room
+        LightLevelRoom: 0, // Default light level preference for Living Room
       },
     })
       .then(() => {
-        alert("House and Room1 added successfully!");
+        alert(
+          "House and Living Room added successfully with default preferences!"
+        );
       })
       .catch((error) => {
-        alert("Failed to add house and Room1: " + error.message);
+        alert("Failed to add house and Living Room: " + error.message);
       });
   };
 
@@ -46,29 +50,11 @@ function AddHouse() {
           />
         </label>
         <label>
-          Owner UID:
+          Owner Email:
           <input
             type="text"
-            value={ownerUid}
-            onChange={(e) => setOwnerUid(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Room1 Temperature:
-          <input
-            type="number"
-            value={tempRoom}
-            onChange={(e) => setTempRoom(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Room1 Light Level:
-          <input
-            type="number"
-            value={lightLevelRoom}
-            onChange={(e) => setLightLevelRoom(e.target.value)}
+            value={ownerEmail}
+            onChange={(e) => setOwnerEmail(e.target.value)}
             required
           />
         </label>

@@ -73,14 +73,15 @@ function App() {
   };
 
   // Fetch house data and determine if the user is the owner
+  // Fetch house data and determine if the user is the owner
   const fetchHouseData = async (currentUser, userDetails) => {
     if (userDetails && userDetails.houseId) {
       const houseRef = ref(database, `Houses/${userDetails.houseId}`);
       try {
         const snapshot = await get(houseRef);
         const houseData = snapshot.val();
-        setIsOwner(houseData && currentUser.uid === houseData.owner);
-
+        setIsOwner(houseData && currentUser.email === houseData.owner); // Now comparing emails
+        console.log(houseData && currentUser.email === houseData.owner);
         // Update localStorage with the latest userDetails
         localStorage.setItem("UserDetails", JSON.stringify(userDetails));
       } catch (error) {
