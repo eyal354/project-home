@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { database } from "../Firebase"; // Adjust the import path as needed
+import { database } from "../Firebase.js";
 import { ref, set } from "firebase/database";
 
-function AddHouse() {
+function Admin() {
   const [houseId, setHouseId] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Ensuring the email is compatible with Firebase keys by replacing '.' with ','
     const sanitizedEmail = ownerEmail.replace(/\./g, ",");
 
     const houseRef = ref(database, `Houses/${houseId}`);
@@ -17,20 +16,19 @@ function AddHouse() {
       owner: ownerEmail,
       ApprovedUsers: {
         [sanitizedEmail]: {
-          // Using the sanitized email as the key
           isHome: false,
           priority: 1,
         },
       },
-      LivingRoom: {
-        TempRoom: 0, // Default temperature preference for Living Room
-        LightLevelRoom: 0, // Default light level preference for Living Room
+      Rooms: {
+        "Living Room": {
+          TempRoom: 0, // Default temperature for Living Room
+          LightLevelRoom: 0, // Default light level for Living Room
+        },
       },
     })
       .then(() => {
-        alert(
-          "House and Living Room added successfully with default preferences!"
-        );
+        alert("House with default Living Room added successfully!");
       })
       .catch((error) => {
         alert("Failed to add house and Living Room: " + error.message);
@@ -64,4 +62,4 @@ function AddHouse() {
   );
 }
 
-export default AddHouse;
+export default Admin;
