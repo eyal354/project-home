@@ -4,6 +4,8 @@ import { get, ref, set } from "firebase/database";
 import { database } from "../Firebase";
 import { useNavigate } from "react-router-dom";
 import "../component-css/Sign.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Sign() {
   const navigate = useNavigate();
@@ -20,7 +22,6 @@ export default function Sign() {
     confirmPassword: "",
   });
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     setPasswordMismatch(passwords.password !== passwords.confirmPassword);
@@ -37,25 +38,28 @@ export default function Sign() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    let currentUser = null; // Define a variable to hold the user object outside of the promise chain
+
     if (passwordMismatch) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     createUserWithEmailAndPassword(auth, formData.email, passwords.password)
       .then((userCredential) => {
         // User account created successfully
-        const user = userCredential.user;
+        currentUser = userCredential.user; // Assign the user object to the variable
         const userProfile = {
           ...formData,
           age: parseInt(formData.age, 10) || 0,
         };
         // Save user profile in the 'users' node
-        return set(ref(database, `users/${user.uid}`), userProfile);
+        return set(ref(database, `users/${currentUser.uid}`), userProfile);
       })
       .then(() => {
         // If a houseId is provided, proceed to check for ownership
-        if (formData.houseId) {
+        if (formData.houseId && currentUser) {
+          // Check if currentUser is available
           const houseRef = ref(database, `Houses/${formData.houseId}`);
           return get(houseRef).then((snapshot) => {
             const houseData = snapshot.val();
@@ -64,27 +68,39 @@ export default function Sign() {
               // User's email is not the owner's email, add to pending requests
               const pendingRef = ref(
                 database,
-                `Houses/${formData.houseId}/PendingRequest/${user.uid}`
+                `Houses/${formData.houseId}/PendingRequest/${currentUser.uid}`
               );
-              return set(pendingRef, formData.email); // Use the user's UID as key for the pending request
+              return set(pendingRef, formData.email); // Use the currentUser's UID as key for the pending request
             }
           });
         }
       })
       .then(() => {
-        console.log(
-          "Registration Successful, User profile saved, and Pending request handled"
-        );
+        //success
         navigate("/");
       })
       .catch((error) => {
-        setError(error.message);
-        console.error("Registration Failed:", error);
+        //error
+        toast.error(error.message);
       });
   }
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Bounce
+      />
+      {/* The rest of your component's JSX */}
       <div className="background">{/* Background shapes if needed */}</div>
       <form className="form-sign" onSubmit={handleSubmit}>
         <h3>Sign Up Here</h3>
@@ -149,7 +165,6 @@ export default function Sign() {
           {passwordMismatch && "Passwords do not match"}
         </p>
 
-        {error && <p className="error">{error}</p>}
         <button className="formBTN-s" type="submit">
           Sign Up
         </button>

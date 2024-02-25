@@ -6,6 +6,8 @@ import { database } from "../Firebase";
 // import "../style.css";
 import "../component-css/Login.css";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,7 +18,6 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [loginStatus, setLoginStatus] = useState("");
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -34,7 +35,6 @@ export default function Login() {
         const user = userCredential.user;
         setLoggedIn(true);
         localStorage.setItem("loggedIn", true);
-        setLoginStatus("Login Successful");
 
         // Fetch and store user details
         const userRef = ref(database, "users/" + user.uid);
@@ -46,16 +46,25 @@ export default function Login() {
         navigate("/");
       })
       .catch(() => {
-        setLoginStatus("Email or password is incorrect");
+        toast.error("Email or password is incorrect");
       });
   }
 
   return (
     <>
-      <div className="background">
-        {/* <div className="shape"></div>
-        <div className="shape"></div> */}
-      </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        transition:Bounce
+      />
       <form className="form-login" onSubmit={handleSubmit}>
         <h3>Login Here</h3>
 
@@ -82,8 +91,6 @@ export default function Login() {
         <button className="formBTN" type="submit">
           Login
         </button>
-
-        {loginStatus && <p className="loginStatus">{loginStatus}</p>}
       </form>
     </>
   );
