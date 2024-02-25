@@ -23,7 +23,7 @@ export default function UserID() {
       if (!userDetails || !userDetails.houseId) return;
 
       // Fetch user's basic information
-      const userRef = ref(database, `users/${user.uid}`);
+      const userRef = ref(database, `users/${user.email.replace(/\./g, ",")}`);
       get(userRef).then((userSnapshot) => {
         if (userSnapshot.exists()) {
           const userData = userSnapshot.val();
@@ -39,7 +39,10 @@ export default function UserID() {
       // Fetch user's preferences
       const prefRef = ref(
         database,
-        `Houses/${userDetails.houseId}/ApprovedUsers/${user.uid}/pref`
+        `Houses/${userDetails.houseId}/ApprovedUsers/${user.email.replace(
+          /\./g,
+          ","
+        )}/pref`
       );
       const unsubscribe = onValue(prefRef, (snapshot) => {
         const fetchedData = snapshot.val();
@@ -74,7 +77,10 @@ export default function UserID() {
       await firebaseSet(
         ref(
           database,
-          `Houses/${userDetails.houseId}/ApprovedUsers/${user.uid}/pref/${type}`
+          `Houses/${userDetails.houseId}/ApprovedUsers/${user.email.replace(
+            /\./g,
+            ","
+          )}/pref/${type}`
         ),
         newValue
       );

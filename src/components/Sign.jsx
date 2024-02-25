@@ -54,7 +54,10 @@ export default function Sign() {
           age: parseInt(formData.age, 10) || 0,
         };
         // Save user profile in the 'users' node
-        return set(ref(database, `users/${currentUser.uid}`), userProfile);
+        return set(
+          ref(database, `users/${currentUser.email.replace(/\./g, ",")}`),
+          userProfile
+        );
       })
       .then(() => {
         // If a houseId is provided, proceed to check for ownership
@@ -68,7 +71,9 @@ export default function Sign() {
               // User's email is not the owner's email, add to pending requests
               const pendingRef = ref(
                 database,
-                `Houses/${formData.houseId}/PendingRequest/${currentUser.uid}`
+                `Houses/${
+                  formData.houseId
+                }/PendingRequest/${currentUser.email.replace(/\./g, ",")}`
               );
               return set(pendingRef, formData.email); // Use the currentUser's UID as key for the pending request
             }

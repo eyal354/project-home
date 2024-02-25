@@ -37,7 +37,10 @@ export default function Login() {
         localStorage.setItem("loggedIn", true);
 
         // Fetch and store user details
-        const userRef = ref(database, "users/" + user.uid);
+        const userRef = ref(
+          database,
+          "users/" + user.email.replace(/\./g, ",")
+        );
         onValue(userRef, (snapshot) => {
           const userDetails = snapshot.val();
           localStorage.setItem("UserDetails", JSON.stringify(userDetails));
@@ -45,8 +48,8 @@ export default function Login() {
 
         navigate("/");
       })
-      .catch(() => {
-        toast.error("Email or password is incorrect");
+      .catch((error) => {
+        toast.error(error);
       });
   }
 

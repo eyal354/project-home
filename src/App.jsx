@@ -32,7 +32,9 @@ function App() {
         localStorage.setItem("User", JSON.stringify(currentUser));
 
         // Fetch user details from the database
-        const userDetails = await fetchUserDetailsFromDatabase(currentUser.uid);
+        const userDetails = await fetchUserDetailsFromDatabase(
+          currentUser.email.replace(/\./g, ",")
+        );
         await fetchHouseData(currentUser, userDetails);
       } else {
         setLoggedIn(false);
@@ -56,8 +58,8 @@ function App() {
   }, [loggedIn, isAdmin]);
 
   // Fetch user details from Firebase Database
-  const fetchUserDetailsFromDatabase = async (uid) => {
-    const userRef = ref(database, `users/${uid}`);
+  const fetchUserDetailsFromDatabase = async (email) => {
+    const userRef = ref(database, `users/${email.replace(/\./g, ",")}`);
     try {
       const snapshot = await get(userRef);
       if (snapshot.exists()) {
