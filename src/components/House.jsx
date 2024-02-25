@@ -2,7 +2,7 @@ import { database } from "../Firebase.js";
 import { ref, set, onValue, remove } from "firebase/database";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../App";
-import { Check, Trash2, Pencil, Loader2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 // import "../style.css";
 
