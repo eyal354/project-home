@@ -14,7 +14,7 @@ function Admin() {
     const houseRef = ref(database, `Houses/${houseId}`);
     set(houseRef, {
       owner: ownerEmail,
-      Logs: {},
+      logs: {},
       ApprovedUsers: {
         [sanitizedEmail]: {
           isHome: false,

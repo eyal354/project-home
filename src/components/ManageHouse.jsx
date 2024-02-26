@@ -1,4 +1,5 @@
 import House from "./House";
+import Logs from "./Logs";
 import PendingRequests from "./PendingRequests";
 import UserList from "./UserList";
 // import "../component-css/ManageHouse.css";
@@ -17,6 +18,9 @@ export default function ManageHouse() {
           </div>
           <div className="col-md-4 col-sm-12">
             <UserList />
+          </div>
+          <div className="col-md-4 col-sm-12">
+            <Logs />
           </div>
         </div>
       </div>
