@@ -49,29 +49,6 @@ export default function House() {
     }
   };
 
-  const editRoom = (oldRoomName) => {
-    const newRoomName = prompt("Enter the new room name:", oldRoomName);
-    if (newRoomName && newRoomName !== oldRoomName) {
-      const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
-      const houseId = userDetails?.houseId;
-
-      // Update room name
-      const oldRoomRef = ref(
-        database,
-        `Houses/${houseId}/Rooms/${oldRoomName}`
-      );
-      const newRoomRef = ref(
-        database,
-        `Houses/${houseId}/Rooms/${newRoomName}`
-      );
-      onValue(oldRoomRef, (snapshot) => {
-        const roomData = snapshot.val();
-        set(newRoomRef, roomData); // Set new room with old data
-        remove(oldRoomRef); // Remove old room
-      });
-    }
-  };
-
   const deleteRoom = (roomName) => {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     const houseId = userDetails?.houseId;
@@ -103,7 +80,6 @@ export default function House() {
         <div key={room.name} className="card pa">
           <div className="card-header">
             <h2>Data Display for {room.name}</h2>
-            <button onClick={() => editRoom(room.name)}>Edit</button>
             <button onClick={() => deleteRoom(room.name)}>
               <Trash2 />
             </button>

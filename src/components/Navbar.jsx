@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { AuthContext } from "../App";
-import "../component-css/Navbar.css"; // Make sure to uncomment this if you have custom CSS
+import "../component-css/Navbar.css";
 
 export function Navbar() {
   const { loggedIn, setLoggedIn, isOwner } = useContext(AuthContext);
@@ -27,9 +27,9 @@ export function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <NavLink className="navbar-brand" to="/">
           CasaAI
-        </Link>
+        </NavLink>
         <button
           className="navbar-toggler"
           type="button"
@@ -46,29 +46,50 @@ export function Navbar() {
           id="navbarNavAltMarkup"
         >
           <div className="navbar-nav text-center">
-            <Link className="nav-link active" aria-current="page" to="/home">
+            <NavLink
+              className="nav-link"
+              aria-current="page"
+              to="/home"
+              activeclassname="active"
+            >
               Home
-            </Link>
-            <Link className="nav-link" to="/features">
+            </NavLink>
+            <NavLink
+              className="nav-link"
+              to="/features"
+              activeclassname="active"
+            >
               Features
-            </Link>
-            <Link className="nav-link" to="/pricing">
+            </NavLink>
+            <NavLink
+              className="nav-link"
+              to="/pricing"
+              activeclassname="active"
+            >
               Pricing
-            </Link>
-            <Link className="nav-link" to="/about">
+            </NavLink>
+            <NavLink className="nav-link" to="/about" activeclassname="active">
               About
-            </Link>
+            </NavLink>
           </div>
           <div className="navbar-nav text-center">
             {loggedIn ? (
               <>
-                <Link className="nav-link" to="/panel">
+                <NavLink
+                  className="nav-link"
+                  to="/panel"
+                  activeclassname="active"
+                >
                   User Panel
-                </Link>
+                </NavLink>
                 {isOwner && (
-                  <Link className="nav-link" to="/manage-house">
+                  <NavLink
+                    className="nav-link"
+                    to="/manage-house"
+                    activeclassname="active"
+                  >
                     Manage House
-                  </Link>
+                  </NavLink>
                 )}
                 <button onClick={handleLogout} className="btn btn-outline-info">
                   Logout
@@ -76,12 +97,20 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Link className="nav-link" to="/sign">
+                <NavLink
+                  className="nav-link"
+                  to="/sign"
+                  activeclassname="active"
+                >
                   Sign Up
-                </Link>
-                <Link className="nav-link" to="/login">
+                </NavLink>
+                <NavLink
+                  className="nav-link"
+                  to="/login"
+                  activeclassname="active"
+                >
                   Login
-                </Link>
+                </NavLink>
               </>
             )}
           </div>
