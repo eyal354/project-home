@@ -64,7 +64,6 @@ export default function House() {
 
   return (
     <div>
-      <button onClick={() => setShowAddRoom(!showAddRoom)}>+ Add Room</button>
       {showAddRoom && (
         <div>
           <input
@@ -86,14 +85,19 @@ export default function House() {
           </div>
           <div className="card-body">
             <p className="card-text">
-              <strong>Light Level:</strong> {room.LightLevelRoom}
+              <strong>
+                {" "}
+                <i className="fa-solid fa-lightbulb"></i> Light Level:{" "}
+              </strong>{" "}
+              {room.LightLevelRoom}
             </p>
             <p className="card-text">
-              <strong>Temp:</strong> {room.TempRoom}
+              <strong>❆ Temp:</strong> {room.TempRoom}
             </p>
           </div>
         </div>
       ))}
+      <button onClick={() => setShowAddRoom(!showAddRoom)}>+ Add Room</button>
     </div>
   );
 }

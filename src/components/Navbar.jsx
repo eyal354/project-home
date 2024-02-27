@@ -54,13 +54,7 @@ export function Navbar() {
             >
               Home
             </NavLink>
-            <NavLink
-              className="nav-link"
-              to="/features"
-              activeclassname="active"
-            >
-              Features
-            </NavLink>
+
             <NavLink
               className="nav-link"
               to="/pricing"
