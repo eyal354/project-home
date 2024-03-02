@@ -12,7 +12,6 @@ import ManageHouse from "./components/ManageHouse";
 import About from "./components/About";
 import Pricing from "./components/Pricing";
 import "./style.css";
-
 import Admin from "./components/Admin";
 
 export const AuthContext = createContext();

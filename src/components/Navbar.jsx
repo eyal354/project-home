@@ -5,7 +5,7 @@ import { AuthContext } from "../App";
 import "../component-css/Navbar.css";
 
 export function Navbar() {
-  const { loggedIn, setLoggedIn, isOwner } = useContext(AuthContext);
+  const { loggedIn, setLoggedIn, isOwner, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -74,7 +74,7 @@ export function Navbar() {
                   to="/panel"
                   activeclassname="active"
                 >
-                  User Panel
+                  {isAdmin ? "Admin Panel" : "User Panel"}
                 </NavLink>
                 {isOwner && (
                   <NavLink
