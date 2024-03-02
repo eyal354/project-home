@@ -20,6 +20,7 @@ const houseId = "House15"; // ID of the house for which the server manages data
 const approvedUsersRef = admin
   .database()
   .ref(`Houses/${houseId}/ApprovedUsers`);
+const LogsRef = admin.database().ref(`Houses/${houseId}`);
 
 // Updates the count of users at home
 function updateUsersInHomeCount() {
@@ -70,6 +71,30 @@ app.post("/api/rfidcheck", async (req, res) => {
 
     if (!rfidExists) {
       res.status(404).send({ message: "RFID not found" });
+
+      // Get the current timestamp
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${
+        now.getMonth() + 1
+      }-${now.getDate()}:(${now.getHours()}:${now.getMinutes()}:${now.getSeconds()})`;
+      const unauthorizedAccessString = `Unauthorized Card , RFID: ${userRfid}, Time: ${timestamp}`;
+
+      // Assuming 'LogsRef' is correctly pointing to your 'logs' section in Firebase
+      LogsRef.child("logs")
+        .orderByKey()
+        .limitToLast(1)
+        .once("value", (snapshot) => {
+          const logs = snapshot.val();
+          let nextKey = 1;
+          if (logs) {
+            const lastKey = parseInt(Object.keys(logs)[0]);
+            nextKey = lastKey + 1;
+          }
+          // Set the new log entry with the incremented key and string value
+          LogsRef.child("logs")
+            .child(nextKey.toString())
+            .set(unauthorizedAccessString);
+        });
     }
   } catch (error) {
     console.error("Error in RFID check:", error);
