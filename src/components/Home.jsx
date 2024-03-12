@@ -1,14 +1,14 @@
-// import "../style.css"; // Importing the CSS file
+//import "../style.css"; // Importing the CSS file
 import "../component-css/Home.css"; // Importing the CSS file
 export default function Home() {
   return (
-    <div className="container">
+    <div className="container bd-masthead">
       <header className="header">
-        <h1 className="headerTitle">CasaAI</h1>
+        <h1 className="display-1 text-center my-4">CasaAI</h1>
         <p className="headerSubtitle">Building future for you home</p>
       </header>
       <section className="features">
-        <div className="featureItem">
+        <div className="featureItem bd-masthead">
           <h2 className="featureTitle">Temperature Control</h2>
           <p className="featureDescription">
             Adjust the temperature from anywhere

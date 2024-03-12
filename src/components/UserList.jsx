@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase";
-import { update, ref, onValue, get } from "firebase/database";
+import { update, ref, onValue, get, remove } from "firebase/database";
 import { AuthContext } from "../App";
 import "../component-css/UserList.css";
 
@@ -58,16 +58,10 @@ export default function UserList() {
     if (!userDetails || !userDetails.houseId) return;
 
     const houseId = userDetails.houseId;
-    const updates = {};
-    updates[`Houses/${houseId}/ApprovedUsers/${userId}`] = null;
 
-    update(ref(database), updates)
-      .then(() => {
-        setApprovedUsers((prevUsers) =>
-          prevUsers.filter((user) => user.userId !== userId)
-        );
-      })
-      .catch((error) => console.error("Error removing user", error));
+    remove(ref(database, `Houses/${houseId}/ApprovedUsers/${userId}`)).catch(
+      (error) => console.error("Error removing user", error)
+    );
   };
 
   const handlePriorityChange = (userId, newPriority) => {

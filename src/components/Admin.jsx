@@ -37,28 +37,49 @@ function Admin() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          House ID:
-          <input
-            type="text"
-            value={houseId}
-            onChange={(e) => setHouseId(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Owner Email:
-          <input
-            type="text"
-            value={ownerEmail}
-            onChange={(e) => setOwnerEmail(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Add House</button>
-      </form>
+    <div className="container py-5">
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <div className="card border-0 shadow-sm">
+            <div className="card-header bg-black text-white">
+              <h4 className="mb-0">Add a New House</h4>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="houseIdInput" className="form-label">
+                    House ID:
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="houseIdInput"
+                    value={houseId}
+                    onChange={(e) => setHouseId(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="ownerEmailInput" className="form-label">
+                    Owner Email:
+                  </label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    id="ownerEmailInput"
+                    value={ownerEmail}
+                    onChange={(e) => setOwnerEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary w-100">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

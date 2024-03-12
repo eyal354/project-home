@@ -79,7 +79,10 @@ export default function House() {
         <div key={room.name} className="card pa">
           <div className="card-header">
             <h2>Data Display for {room.name}</h2>
-            <button onClick={() => deleteRoom(room.name)}>
+            <button
+              className="btn btn-danger"
+              onClick={() => deleteRoom(room.name)}
+            >
               <Trash2 />
             </button>
           </div>
@@ -97,7 +100,12 @@ export default function House() {
           </div>
         </div>
       ))}
-      <button onClick={() => setShowAddRoom(!showAddRoom)}>+ Add Room</button>
+      <button
+        className="btn btn-primary"
+        onClick={() => setShowAddRoom(!showAddRoom)}
+      >
+        + Add Room
+      </button>
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import { useEffect, useState, useContext } from "react";
-import { getAuth } from "firebase/auth";
 import { database } from "../Firebase.js";
 import { get, ref, onValue, set as firebaseSet } from "firebase/database";
 import "../style.css";
 import { AuthContext } from "../App";
 
+const formatEmail = (email) => email.replace(/\./g, ",");
+
 export default function UserID() {
-  const auth = getAuth();
-  const { loggedIn, user } = useContext(AuthContext);
-  const [UserDetails, setUserDetails] = useState({
+  const { user } = useContext(AuthContext);
+  const [userDetails, setUserDetails] = useState({
     age: 0,
     firstname: "",
     lastname: "",
@@ -18,68 +18,51 @@ export default function UserID() {
   const [temperatureInput, setTemperatureInput] = useState(20);
 
   useEffect(() => {
-    if (user) {
-      const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
-      if (!userDetails || !userDetails.houseId) return;
+    if (!user) return;
+    const userDetailsLocal = JSON.parse(localStorage.getItem("UserDetails"));
+    if (!userDetailsLocal || !userDetailsLocal.houseId) return;
 
-      // Fetch user's basic information
-      const userRef = ref(database, `users/${user.email.replace(/\./g, ",")}`);
-      get(userRef).then((userSnapshot) => {
-        if (userSnapshot.exists()) {
-          const userData = userSnapshot.val();
-          setUserDetails((prevDetails) => ({
-            ...prevDetails,
-            age: userData.age,
-            firstname: userData.firstname,
-            lastname: userData.lastname,
-          }));
-        }
-      });
+    const fetchUserData = async () => {
+      const userRef = ref(database, `users/${formatEmail(user.email)}`);
+      const userSnapshot = await get(userRef);
+      if (userSnapshot.exists()) {
+        const userData = userSnapshot.val();
+        setUserDetails(userData);
+      }
 
-      // Fetch user's preferences
       const prefRef = ref(
         database,
-        `Houses/${userDetails.houseId}/ApprovedUsers/${user.email.replace(
-          /\./g,
-          ","
+        `Houses/${userDetailsLocal.houseId}/ApprovedUsers/${formatEmail(
+          user.email
         )}/pref`
       );
-      const unsubscribe = onValue(prefRef, (snapshot) => {
-        const fetchedData = snapshot.val();
-        if (fetchedData) {
-          setUserDetails((prevDetails) => ({
-            ...prevDetails,
-            pref: fetchedData,
-          }));
-          setLightLevelInput(fetchedData.lightlevel || 0);
-          setTemperatureInput(fetchedData.temperature || 20);
-        } else {
-          console.log("No preference data available");
-          setLightLevelInput(0);
-          setTemperatureInput(20);
+      onValue(prefRef, (snapshot) => {
+        const prefData = snapshot.val();
+        if (prefData) {
+          setLightLevelInput(prefData.lightlevel || 0);
+          setTemperatureInput(prefData.temperature || 20);
         }
       });
-      return () => unsubscribe();
-    }
-  }, [auth, loggedIn, user]);
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const handleSliderChange = async (type, newValue) => {
-    const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
-    if (!userDetails || !userDetails.houseId) return;
+    const userDetailsLocal = JSON.parse(localStorage.getItem("UserDetails"));
+    if (!userDetailsLocal || !userDetailsLocal.houseId) return;
 
-    if (type === "lightlevel") {
-      setLightLevelInput(newValue);
-    } else if (type === "temperature") {
-      setTemperatureInput(newValue);
-    }
+    const newState =
+      type === "lightlevel"
+        ? setLightLevelInput(newValue)
+        : setTemperatureInput(newValue);
 
     try {
       await firebaseSet(
         ref(
           database,
-          `Houses/${userDetails.houseId}/ApprovedUsers/${user.email.replace(
-            /\./g,
-            ","
+          `Houses/${userDetailsLocal.houseId}/ApprovedUsers/${formatEmail(
+            user.email
           )}/pref/${type}`
         ),
         newValue
@@ -87,11 +70,11 @@ export default function UserID() {
     } catch (error) {
       console.error(`Failed to update ${type} level:`, error);
     }
+    return newState;
   };
 
-  const fullName = UserDetails.firstname + " " + UserDetails.lastname;
+  const fullName = `${userDetails.firstname} ${userDetails.lastname}`;
   const bulbOpacity = lightLevelInput / 100;
-
   return (
     <div className="card data-send">
       <div className="card-header">

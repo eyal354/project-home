@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { database } from "../Firebase";
-import { ref, query, orderByKey, get } from "firebase/database";
+import { ref, get, onValue } from "firebase/database";
 
 export default function Logs() {
   const [logs, setLogs] = useState([]);
@@ -11,15 +11,18 @@ export default function Logs() {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     if (!userDetails || !userDetails.houseId) return;
 
-    // Fetch all log keys on component mount
     const logsRef = ref(database, `Houses/${userDetails.houseId}/logs`);
-    get(query(logsRef, orderByKey())).then((snapshot) => {
+    // Attach an event listener to listen for changes
+    const unsubscribe = onValue(logsRef, (snapshot) => {
       if (snapshot.exists()) {
         const keys = Object.keys(snapshot.val());
         setLogKeys(keys.reverse()); // Reverse to start from the latest log
-        updateLogs(keys, 0); // Initial logs fetch
+        updateLogs(keys, 0); // Fetch logs again with the new keys
       }
     });
+
+    // Cleanup function to unsubscribe from the event listener
+    return () => unsubscribe();
   }, []);
 
   const updateLogs = (keys, startIndex) => {

@@ -2,7 +2,6 @@ import { ref, get, update, onValue } from "firebase/database";
 import { database } from "../Firebase";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../App";
-// import "../style.css";
 
 export default function PendingRequests() {
   const { user } = useContext(AuthContext);
@@ -18,51 +17,47 @@ export default function PendingRequests() {
       `Houses/${houseId}/PendingRequest`
     );
 
-    const unsubscribe = onValue(pendingRequestsRef, async (snapshot) => {
-      const requestKeys = snapshot.val() || {};
-      const fetchedRequests = [];
+    const unsubscribe = onValue(pendingRequestsRef, (snapshot) => {
+      const requests = snapshot.val() || {};
+      const userIds = Object.keys(requests);
 
-      for (const userId in requestKeys) {
-        // The key is the userId in this structure
-        const userRef = ref(database, `users/${userId}`);
-        const userSnap = await get(userRef);
-        if (userSnap.exists()) {
-          fetchedRequests.push({
-            userId: userId,
-            email: userSnap.val().email,
-          });
-        }
-      }
-
-      setPendingRequests(fetchedRequests);
+      Promise.all(
+        userIds.map((userId) =>
+          get(ref(database, `users/${userId}`)).then((userSnap) =>
+            userSnap.exists() ? { userId, email: userSnap.val().email } : null
+          )
+        )
+      ).then((fetchedRequests) => {
+        setPendingRequests(fetchedRequests.filter(Boolean));
+      });
     });
 
     return () => unsubscribe();
   }, [user]);
 
-  const handleRequest = (userId, approve) => {
+  const handleRequest = async (userId, approve) => {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     if (!userDetails || !userDetails.houseId) return;
 
     const houseId = userDetails.houseId;
+    const updates = {
+      [`Houses/${houseId}/PendingRequest/${userId}`]: null,
+      ...(approve && {
+        [`Houses/${houseId}/ApprovedUsers/${userId}`]: {
+          RfidKey: "",
+          isHome: false,
+        },
+      }),
+    };
 
-    const updates = {};
-    if (approve) {
-      updates[`Houses/${houseId}/ApprovedUsers/${userId}`] = {
-        RfidKey: "",
-        isHome: false,
-      };
+    try {
+      await update(ref(database), updates);
+      setPendingRequests((prevRequests) =>
+        prevRequests.filter((request) => request.userId !== userId)
+      );
+    } catch (error) {
+      console.error("Error processing request", error);
     }
-    updates[`Houses/${houseId}/PendingRequest/${userId}`] = null;
-
-    update(ref(database), updates)
-      .then(() => {
-        console.log("Request processed");
-        setPendingRequests((prevRequests) =>
-          prevRequests.filter((request) => request.userId !== userId)
-        );
-      })
-      .catch((error) => console.error("Error processing request", error));
   };
 
   return (

@@ -6,7 +6,7 @@ export default function About() {
       <div className="row justify-content-center">
         {/* Use col classes to define the width of your content area. Adjust the size as needed */}
         <div className="col-12 col-md-8 col-lg-6">
-          <h1>About Me</h1>
+          <h2 className="display-1 text-center my-4">About</h2>
           <h2>Name: Eyal Brenner</h2>
           <h2>ID: 326663606</h2>
           <h2>Age: 19</h2>
