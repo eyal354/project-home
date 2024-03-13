@@ -89,7 +89,7 @@ export default function UserID() {
           <input
             type="range"
             className="custom-range"
-            min="0"
+            min="1"
             max="100"
             value={lightLevelInput}
             onChange={(e) =>

@@ -64,17 +64,6 @@ export default function House() {
 
   return (
     <div>
-      {showAddRoom && (
-        <div>
-          <input
-            type="text"
-            placeholder="Room Name"
-            value={newRoomName}
-            onChange={(e) => setNewRoomName(e.target.value)}
-          />
-          <button onClick={addRoom}>Submit</button>
-        </div>
-      )}
       {roomsData.map((room) => (
         <div key={room.name} className="card pa">
           <div className="card-header">
@@ -106,6 +95,19 @@ export default function House() {
       >
         + Add Room
       </button>
+      {showAddRoom && (
+        <div>
+          <input
+            type="text"
+            placeholder="Room Name"
+            value={newRoomName}
+            onChange={(e) => setNewRoomName(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={addRoom}>
+            Submit
+          </button>
+        </div>
+      )}
     </div>
   );
 }

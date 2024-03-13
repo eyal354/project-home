@@ -2,7 +2,6 @@ import House from "./House";
 import Logs from "./Logs";
 import PendingRequests from "./PendingRequests";
 import UserList from "./UserList";
-// import "../component-css/ManageHouse.css";
 
 export default function ManageHouse() {
   return (
