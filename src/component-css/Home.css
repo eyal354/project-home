@@ -1,3 +1,17 @@
+.home-container {
+  /* Set the background image */
+  background-image: url("/homepic.jpg");
+  /* Ensure it covers the entire container */
+  background-size: cover;
+  /* The background image doesn't repeat */
+  background-repeat: no-repeat;
+  /* Align the background image */
+  background-position: center center;
+  /* Ensure the div takes up the full height */
+  min-height: 100vh;
+  /* Additional styles to ensure it covers the entire area */
+  width: 100%;
+}
 .header {
   margin-bottom: 40px;
   text-align: center;

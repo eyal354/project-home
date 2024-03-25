@@ -50,7 +50,7 @@ export function Navbar() {
               className="nav-link"
               aria-current="page"
               to="/home"
-              activeClassName="active"
+              activeclassname="active"
             >
               Home
             </NavLink>
@@ -58,11 +58,11 @@ export function Navbar() {
             <NavLink
               className="nav-link"
               to="/pricing"
-              activeClassName="active"
+              activeclassname="active"
             >
               Pricing
             </NavLink>
-            <NavLink className="nav-link" to="/about" activeClassName="active">
+            <NavLink className="nav-link" to="/about" activeclassname="active">
               About
             </NavLink>
           </div>
@@ -72,7 +72,7 @@ export function Navbar() {
                 <NavLink
                   className="nav-link"
                   to="/panel"
-                  activeClassName="active"
+                  activeclassname="active"
                 >
                   {isAdmin ? "Admin Panel" : "User Panel"}
                 </NavLink>
@@ -80,7 +80,7 @@ export function Navbar() {
                   <NavLink
                     className="nav-link"
                     to="/manage-house"
-                    activeClassName="active"
+                    activeclassname="active"
                   >
                     Manage House
                   </NavLink>
@@ -94,14 +94,14 @@ export function Navbar() {
                 <NavLink
                   className="nav-link"
                   to="/sign"
-                  activeClassName="active"
+                  activeclassname="active"
                 >
                   Sign Up
                 </NavLink>
                 <NavLink
                   className="nav-link"
                   to="/login"
-                  activeClassName="active"
+                  activeclassname="active"
                 >
                   Login
                 </NavLink>

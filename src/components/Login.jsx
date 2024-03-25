@@ -1,24 +1,33 @@
+// Import necessary hooks and utilities from React, React Router, Firebase, and external libraries
 import { useState, useContext } from "react";
 import { AuthContext } from "../App";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { ref, onValue } from "firebase/database";
 import { database } from "../Firebase";
 // import "../style.css";
+
 import "../component-css/Login.css";
 import { useNavigate } from "react-router-dom";
+// Import ToastContainer for notifications and toast function to trigger those notifications
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Defines the Login functional component
 export default function Login() {
+  // Hook to programmatically navigate to other routes
   const navigate = useNavigate();
+  // Initialize Firebase authentication service
   const auth = getAuth();
+  // Destructuring setLoggedIn from AuthContext to manage login state
   const { setLoggedIn } = useContext(AuthContext);
 
+  // useState hook to manage form data for email and password inputs
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
+  // Function to handle form input changes and update formData state accordingly
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prevFormData) => ({
@@ -27,16 +36,18 @@ export default function Login() {
     }));
   }
 
+  // Function to handle form submission, authenticate user, and navigate to the home page upon successful login
   function handleSubmit(event) {
     event.preventDefault();
     signInWithEmailAndPassword(auth, formData.email, formData.password)
       .then((userCredential) => {
-        // User signed in
+        // User successfully signed in
         const user = userCredential.user;
+        // Update login state and store login status in local storage
         setLoggedIn(true);
         localStorage.setItem("loggedIn", true);
 
-        // Fetch and store user details
+        // Fetch and store user details from Firebase database
         const userRef = ref(
           database,
           "users/" + user.email.replace(/\./g, ",")
@@ -46,10 +57,12 @@ export default function Login() {
           localStorage.setItem("UserDetails", JSON.stringify(userDetails));
         });
 
+        // Navigate to the home page
         navigate("/");
       })
       .catch((error) => {
-        toast.error(error);
+        // Display error message using toast notification
+        toast.error(error.message);
       });
   }
 
@@ -66,7 +79,7 @@ export default function Login() {
         draggable
         pauseOnHover
         theme="colored"
-        transition:Bounce
+        transition="Bounce"
       />
       <form className="form-login" onSubmit={handleSubmit}>
         <h3>Login Here</h3>

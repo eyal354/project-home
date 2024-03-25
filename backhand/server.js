@@ -42,6 +42,44 @@ approvedUsersRef.on("child_changed", (snapshot) => {
 updateUsersInHomeCount();
 
 //-------------------------------------------------------------------------------------------------------------------------------
+app.get("/api/checkForEmptyHomeAndMovement", async (req, res) => {
+  try {
+    console.log("call");
+    // Check if no users are at home and movement has been detected
+    if (usersInHomeCount === 0) {
+      console.log("movment");
+      // Log the event
+      const now = new Date();
+      const timestamp = `${now.getFullYear()}-${
+        now.getMonth() + 1
+      }-${now.getDate()}:(${now.getHours()}:${now.getMinutes()}:${now.getSeconds()})`;
+      const movLog = `Movment in empty house, Time: ${timestamp}`;
+
+      LogsRef.child("logs")
+        .orderByKey()
+        .limitToLast(1)
+        .once("value", (snapshot) => {
+          const logs = snapshot.val();
+          let nextKey = 1;
+          if (logs) {
+            const lastKey = parseInt(Object.keys(logs)[0]);
+            nextKey = lastKey + 1;
+          }
+          // Set the new log entry with the incremented key and string value
+          LogsRef.child("logs").child(nextKey.toString()).set(movLog);
+        });
+
+      res.send({ movementDetected: true });
+    } else {
+      res.send({ movementDetected: false });
+    }
+  } catch (error) {
+    console.error("Error in checkForEmptyHomeAndMovement:", error);
+    res.status(500).send({ message: "Server error" });
+  }
+});
+
+//-------------------------------------------------------------------------------------------------------------------------------
 
 // RFID check endpoint
 app.post("/api/rfidcheck", async (req, res) => {
@@ -79,7 +117,6 @@ app.post("/api/rfidcheck", async (req, res) => {
       }-${now.getDate()}:(${now.getHours()}:${now.getMinutes()}:${now.getSeconds()})`;
       const unauthorizedAccessString = `Unauthorized Card , RFID: ${userRfid}, Time: ${timestamp}`;
 
-      // Assuming 'LogsRef' is correctly pointing to your 'logs' section in Firebase
       LogsRef.child("logs")
         .orderByKey()
         .limitToLast(1)
