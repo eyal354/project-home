@@ -1,11 +1,15 @@
+// Import necessary hooks and modules from React and Firebase.
 import { useState, useEffect, useContext } from "react";
 import { database } from "../Firebase";
 import { update, ref, onValue, get, remove } from "firebase/database";
 import { AuthContext } from "../App";
 import "../component-css/UserList.css";
 
+// Define the UserList component.
 export default function UserList() {
+  // Retrieve the current authenticated user's details from context.
   const { user } = useContext(AuthContext);
+  // State hooks for managing component state.
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [ownerEmail, setOwnerEmail] = useState("");
   const [showRfidPopup, setShowRfidPopup] = useState(false);
@@ -13,18 +17,20 @@ export default function UserList() {
   const [rfidKey, setRfidKey] = useState("");
 
   useEffect(() => {
+    // Retrieve user details from local storage and fetch relevant data from Firebase.
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     if (!userDetails || !userDetails.houseId) return;
 
     const houseId = userDetails.houseId;
 
-    // Fetch the owner's email
+    // Fetch the owner's email from Firebase.
     get(ref(database, `Houses/${houseId}/owner`)).then((snapshot) => {
       if (snapshot.exists()) {
         setOwnerEmail(snapshot.val());
       }
     });
 
+    // Subscribe to changes in the list of approved users and update state.
     const approvedUsersRef = ref(database, `Houses/${houseId}/ApprovedUsers`);
     const unsubscribe = onValue(approvedUsersRef, (snapshot) => {
       const approvedUsersData = snapshot.val() || {};
@@ -37,7 +43,7 @@ export default function UserList() {
               email: userData.email,
               isHome: approvedUsersData[userId].isHome,
               priority: approvedUsersData[userId].priority || 1,
-              isOwner: userData.email === ownerEmail, // Check if this user is the owner by email
+              isOwner: userData.email === ownerEmail,
             };
           }
           return null;
@@ -49,16 +55,18 @@ export default function UserList() {
       });
     });
 
+    // Clean up subscription on component unmount.
     return () => unsubscribe();
   }, [user, ownerEmail]);
 
-  // handleDelete and handlePriorityChange functions remain unchanged
+  // Event handlers for user actions like deleting or changing priority.
   const handleDelete = (userId) => {
     const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
     if (!userDetails || !userDetails.houseId) return;
 
     const houseId = userDetails.houseId;
 
+    // Remove a user from Firebase based on userId.
     remove(ref(database, `Houses/${houseId}/ApprovedUsers/${userId}`)).catch(
       (error) => console.error("Error removing user", error)
     );
@@ -72,6 +80,7 @@ export default function UserList() {
     updates[`Houses/${userDetails.houseId}/ApprovedUsers/${userId}/priority`] =
       parseInt(newPriority, 10);
 
+    // Update user priority in Firebase.
     update(ref(database), updates)
       .then(() => {
         setApprovedUsers((prevUsers) =>
@@ -93,6 +102,7 @@ export default function UserList() {
     const updates = {};
     updates[`Houses/${houseId}/ApprovedUsers/${userId}/RfidKey`] = rfidKey;
 
+    // Add or update an RFID key for a user in Firebase.
     update(ref(database), updates)
       .then(() => {
         setShowRfidPopup(false);

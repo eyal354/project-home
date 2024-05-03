@@ -103,10 +103,8 @@ export default function Sign() {
         draggable
         pauseOnHover
         theme="colored"
-        transition:Bounce
+        transition="Bounce"
       />
-      {/* The rest of your component's JSX */}
-      <div className="background">{/* Background shapes if needed */}</div>
       <form className="form-sign" onSubmit={handleSubmit}>
         <h3>Sign Up Here</h3>
 
