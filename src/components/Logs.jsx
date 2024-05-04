@@ -69,15 +69,20 @@ export default function Logs() {
 
   // Renders the log entries and pagination controls
   return (
-    <div className="container mt-3">
-      <h2>Logs</h2>
-      <ul className="list-group">
-        {logs.map((log, index) => (
-          <li key={index} className="list-group-item">
-            {log} {/* Displays each log entry */}
-          </li>
-        ))}
-      </ul>
+    <>
+      <div className="card">
+        <div className="card-header">
+          <h2>Logs</h2>
+        </div>
+
+        <ul className="list-group">
+          {logs.map((log, index) => (
+            <li key={index} className="list-group-item">
+              {log} {/* Displays each log entry */}
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="mt-3 d-flex justify-content-between">
         {/* Pagination controls for navigating through log entries */}
         <button
@@ -95,6 +100,6 @@ export default function Logs() {
           Next 10 Messages
         </button>
       </div>
-    </div>
+    </>
   );
 }

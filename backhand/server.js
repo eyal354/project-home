@@ -41,19 +41,43 @@ approvedUsersRef.on("child_changed", (snapshot) => {
 // Initialize the user count when the server starts
 updateUsersInHomeCount();
 
+let manualSettings = false; // Tracks the manual control settings
+
+// Reference to control settings in Firebase
+const controlSettingsRef = admin
+  .database()
+  .ref(`Houses/${houseId}/ControlSettings`);
+
+// Initialize manualSettings and keep it updated
+controlSettingsRef.child("manualSettings").on("value", (snapshot) => {
+  manualSettings = !!snapshot.val(); // Ensure boolean value
+  console.log(`Manual settings updated: ${manualSettings}`);
+});
+
+let securityMode = false; // Default value for security mode
+
+// Initialize securityMode and keep it updated
+controlSettingsRef.child("securityMode").on("value", (snapshot) => {
+  securityMode = !!snapshot.val(); // Ensure boolean value
+  console.log(`Security mode updated: ${securityMode}`);
+});
+
+let needAlarm = 1;
+
 //-------------------------------------------------------------------------------------------------------------------------------
 app.get("/api/checkForEmptyHomeAndMovement", async (req, res) => {
   try {
     console.log("call");
-    // Check if no users are at home and movement has been detected
-    if (usersInHomeCount === 0) {
-      console.log("movment");
+    // Check if no users are at home, movement has been detected, and security mode is active
+    if (usersInHomeCount === 0 && securityMode) {
+      needAlarm = 1;
+      console.log("movement detected with security mode on");
       // Log the event
       const now = new Date();
       const timestamp = `${now.getFullYear()}-${
         now.getMonth() + 1
       }-${now.getDate()}:(${now.getHours()}:${now.getMinutes()}:${now.getSeconds()})`;
-      const movLog = `Movment in empty house, Time: ${timestamp}`;
+      const movLog = `Alarm: Movement in empty house, Time: ${timestamp}`;
 
       LogsRef.child("logs")
         .orderByKey()
@@ -71,6 +95,7 @@ app.get("/api/checkForEmptyHomeAndMovement", async (req, res) => {
 
       res.send({ movementDetected: true });
     } else {
+      console.log("No movement detected or security mode is off");
       res.send({ movementDetected: false });
     }
   } catch (error) {
@@ -143,63 +168,72 @@ app.post("/api/rfidcheck", async (req, res) => {
 // Endpoint for getting the temperature based on user preferences
 app.get("/api/getHomePreferences", async (req, res) => {
   try {
-    const snapshot = await approvedUsersRef.once("value");
-    const approvedUsers = snapshot.val();
+    if (manualSettings) {
+      // If manual settings are on, fetch and return them directly
+      const snapshot = await controlSettingsRef.once("value");
+      const settings = snapshot.val() || {};
+      console.log(settings.lightLevel);
+      res.status(200).send({
+        temperature: settings.temperature || 23, // Default if not set
+        lightlevel: settings.lightLevel || 50, // Default if not set
+      });
+    } else {
+      // Otherwise, calculate preferences based on user inputs
+      const snapshot = await approvedUsersRef.once("value");
+      const approvedUsers = snapshot.val();
 
-    // Collect preferences of users currently at home
-    let preferences = {
-      temperature: [],
-      lightlevel: [],
-    };
+      let preferences = {
+        temperature: [],
+        lightlevel: [],
+      };
 
-    for (const userId in approvedUsers) {
-      if (approvedUsers[userId].isHome) {
-        if (
-          approvedUsers[userId].pref &&
-          approvedUsers[userId].pref.temperature
-        ) {
-          preferences.temperature.push({
-            priority: approvedUsers[userId].priority || 0,
-            value: approvedUsers[userId].pref.temperature,
-          });
+      // Existing code to calculate preferences based on users at home
+      Object.values(approvedUsers).forEach((user) => {
+        if (user.isHome && user.pref) {
+          if (user.pref.temperature) {
+            preferences.temperature.push({
+              priority: user.priority || 0,
+              value: user.pref.temperature,
+            });
+          }
+          if (user.pref.lightlevel) {
+            preferences.lightlevel.push({
+              priority: user.priority || 0,
+              value: user.pref.lightlevel,
+            });
+          }
         }
-        if (
-          approvedUsers[userId].pref &&
-          approvedUsers[userId].pref.lightlevel
-        ) {
-          preferences.lightlevel.push({
-            priority: approvedUsers[userId].priority || 0,
-            value: approvedUsers[userId].pref.lightlevel,
-          });
-        }
-      }
+      });
+
+      const calculatePreference = (prefs) => {
+        if (prefs.length === 0) return null;
+        const highestPriority = Math.max(...prefs.map((p) => p.priority));
+        const highestPriorityPrefs = prefs.filter(
+          (p) => p.priority === highestPriority
+        );
+        return (
+          highestPriorityPrefs.reduce((sum, p) => sum + p.value, 0) /
+          highestPriorityPrefs.length
+        );
+      };
+
+      const avgTemperature = calculatePreference(preferences.temperature);
+      const avgLightLevel = calculatePreference(preferences.lightlevel);
+      const alarmValue = needAlarm ? needAlarm : 2;
+      res.status(200).send({
+        temperature: avgTemperature !== null ? avgTemperature : 30,
+        lightlevel: avgLightLevel !== null ? avgLightLevel : 0,
+        needAlarm: alarmValue,
+      });
+
+      if (needAlarm == 1) needAlarm = 2;
     }
-
-    const calculatePreference = (preferences) => {
-      if (preferences.length === 0) return null; // No users at home or no preferences set
-
-      const highestPriority = Math.max(...preferences.map((p) => p.priority));
-      const highestPriorityPrefs = preferences.filter(
-        (p) => p.priority === highestPriority
-      );
-      return (
-        highestPriorityPrefs.reduce((sum, p) => sum + p.value, 0) /
-        highestPriorityPrefs.length
-      );
-    };
-
-    const avgTemperature = calculatePreference(preferences.temperature);
-    const avgLightLevel = calculatePreference(preferences.lightlevel);
-
-    res.status(200).send({
-      temperature: avgTemperature !== null ? avgTemperature : 23, // Default temperature
-      lightlevel: avgLightLevel !== null ? avgLightLevel : 50, // Default light level
-    });
   } catch (error) {
     console.error("Error in getHomePreferences:", error);
     res.status(500).send({ message: "Server error" });
   }
 });
+
 //---------------------------------------------------------------------------------------------------
 // Endpoint for setting the living room temperature
 app.post("/api/setLivingRoomTemperature", async (req, res) => {

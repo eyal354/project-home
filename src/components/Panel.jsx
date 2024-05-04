@@ -1,38 +1,48 @@
 import { useEffect, useState, useContext } from "react";
 import { database } from "../Firebase.js";
-import { get, ref } from "firebase/database";
+import { get, ref, onValue } from "firebase/database";
 import { AuthContext } from "../App";
 import UserID from "./UserID.jsx";
 import House from "./House.jsx";
+import Remote from "./Remote.jsx"; // Ensure Remote is imported
 
 function Panel() {
   const { user } = useContext(AuthContext);
-  const [isUserApproved, setIsUserApproved] = useState(null); // null initially to handle loading state
+  const [isUserApproved, setIsUserApproved] = useState(null);
+  const [manualSettings, setManualSettings] = useState(false); // Track manual settings for Remote
 
   useEffect(() => {
     if (user) {
       const userDetails = JSON.parse(localStorage.getItem("UserDetails"));
       if (!userDetails || !userDetails.houseId) {
-        setIsUserApproved(false); // Set to false if there's no house ID in the user details
+        setIsUserApproved(false);
         return;
       }
 
-      const approvedUsersRef = ref(
+      const houseId = userDetails.houseId;
+      const approvedUsersRef = ref(database, `Houses/${houseId}/ApprovedUsers`);
+      const manualSettingsRef = ref(
         database,
-        `Houses/${userDetails.houseId}/ApprovedUsers`
+        `Houses/${houseId}/ControlSettings/manualSettings`
       );
+
       get(approvedUsersRef).then((snapshot) => {
         const approvedUsers = snapshot.val();
         const userKey = user.email.replace(/\./g, ",");
         setIsUserApproved(!!approvedUsers && !!approvedUsers[userKey]);
       });
+
+      // Fetch and monitor manual settings
+      onValue(manualSettingsRef, (snapshot) => {
+        setManualSettings(!!snapshot.val()); // Convert to boolean explicitly
+      });
     } else {
-      setIsUserApproved(false); // Set to false if there's no user logged in
+      setIsUserApproved(false);
     }
   }, [user]);
 
   if (isUserApproved === null) {
-    return <div>Loading...</div>; // Or any other loading state representation
+    return <div>Loading...</div>;
   }
 
   if (!isUserApproved) {
@@ -56,6 +66,13 @@ function Panel() {
           <UserID />
         </div>
       </div>
+      {manualSettings && ( // Conditionally render Remote based on manualSettings
+        <div className="row mb-3">
+          <div className="col-12">
+            <Remote />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

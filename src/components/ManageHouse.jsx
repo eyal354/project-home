@@ -2,6 +2,7 @@ import House from "./House";
 import Logs from "./Logs";
 import PendingRequests from "./PendingRequests";
 import UserList from "./UserList";
+import Control from "./Control";
 
 export default function ManageHouse() {
   return (
@@ -20,6 +21,9 @@ export default function ManageHouse() {
           </div>
           <div className="col-md-4 col-sm-12">
             <Logs />
+          </div>
+          <div className="col-md-4 col-sm-12">
+            <Control />
           </div>
         </div>
       </div>
